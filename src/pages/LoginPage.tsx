@@ -1,10 +1,12 @@
 import Navbar from "@/components/Navbar";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [token, setToken] = useState("");
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     fetch("http://localhost:3000/user/login", {
@@ -13,14 +15,16 @@ const LoginPage = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ username, password }),
-    }).then((res) => res.json().then((data) => {
-      setToken(data.token);
-      if (res.status === 200) {
-        alert("Login successful");
-      } else {
-        alert("Login failed");
-      }
-    }));
+    }).then((res) =>
+      res.json().then((data) => {
+        if (res.status === 202) {
+          Cookies.set("token", data.token, { expires: 2 });
+          navigate("/", { state: { isLoggedIn: true } });
+        } else {
+          alert("Login failed");
+        }
+      })
+    );
   };
   return (
     <>

@@ -1,10 +1,12 @@
 import Navbar from "@/components/Navbar";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     fetch("http://localhost:3000/user/signup", {
@@ -14,9 +16,8 @@ const SignUpPage = () => {
       },
       body: JSON.stringify({ username, password, email }),
     }).then((res) => {
-      console.log(res)
-      if (res.status === 200) {
-        alert("SignUp successful");
+      if (res.status === 201) {
+        navigate("/", { state: { isLoggedIn: true } });
       } else {
         alert("SignUp failed");
       }

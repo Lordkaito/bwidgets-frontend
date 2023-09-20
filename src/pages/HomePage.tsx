@@ -3,12 +3,17 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import FolderCreator from "@components/FolderCreator";
+import FolderComponent from "@/components/Folder";
+import "@styles/HomePage.css";
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [folders, setFolders] = useState([]);
   const [images, setImages] = useState([]);
   const { state } = useLocation();
   useEffect(() => {
+    if(folders.length > 0) return;
+
     if (state?.isLoggedIn) {
       fetchData();
       return;
@@ -27,16 +32,16 @@ const HomePage = () => {
       }).then((res) =>
         res.json().then((data) => {
           if (data.length > 0) {
+            console.log(data);
             setFolders(data);
-            setIsLoading(false);
           } else {
             fetch("http://localhost:3000/api/images").then((res) =>
               res.json().then((data) => {
                 setImages(data);
-                setIsLoading(false);
               })
             );
           }
+          setIsLoading(false);
         })
       );
     } catch (err) {
@@ -45,15 +50,14 @@ const HomePage = () => {
   };
   return (
     <>
-      <Navbar />
-      {state?.isLoggedIn ? <h1>Logged in</h1> : <h1>Home page</h1>}
+      <Navbar logged={state?.isLoggedIn} />
+      <FolderCreator />
+      <h1>HomePage</h1>
       {isLoading && <h1>Loading...</h1>}
       {folders.length > 0 ? (
         <div className="folders-container">
-          {folders.map((folder: any) => (
-            <div className="folder" key={folder.id}>
-              <h2>{folder.name}</h2>
-            </div>
+          {folders.map((folder: {id: number, name: string}) => (
+            <FolderComponent key={folder.id} name={folder.name} id={folder.id}/>
           ))}
         </div>
       ) : (

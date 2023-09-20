@@ -1,0 +1,7 @@
+.folders-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 1rem;
+  margin: 1rem 1rem;
+  place-content: center;
+}

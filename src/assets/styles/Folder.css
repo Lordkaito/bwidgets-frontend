@@ -1,0 +1,26 @@
+.folder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  border-radius: 3px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  padding: 10px;
+  margin: 10px;
+  width: 150px;
+  height: 150px;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: black;
+}
+
+.folder-cont {
+  display: grid;
+  place-content: center;
+}
+
+.folder:hover {
+  background-color: #e0e0e0;
+}

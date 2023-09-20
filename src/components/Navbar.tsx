@@ -1,7 +1,7 @@
 import "@styles/Navbar.css";
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = (state: any) => {
   return (
     <>
       <nav className="menu-container">
@@ -21,14 +21,22 @@ const Navbar = () => {
               <Link to="/">Home</Link>
             </li>
           </ul>
-          <ul>
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-            <li>
-              <Link to="/signup">Sign Up</Link>
-            </li>
-          </ul>
+          {state?.isLoggedIn ? (
+            <ul>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/signup">Sign Up</Link>
+              </li>
+            </ul>
+          ) : (
+            <ul>
+              <li>
+                <Link to="/logout">Logout</Link>
+              </li>
+            </ul>
+          )}
         </div>
       </nav>
     </>

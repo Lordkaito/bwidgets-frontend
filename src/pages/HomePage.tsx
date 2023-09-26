@@ -5,7 +5,7 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import FolderComponent from "@/components/Folder";
 import { useNavigate } from "react-router-dom";
-import "@styles/HomePage.css";
+import "@styles/Homepage.css";
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [folders, setFolders] = useState([]);

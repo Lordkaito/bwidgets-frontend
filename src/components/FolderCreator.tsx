@@ -1,11 +1,13 @@
 import { useState } from "react";
-const FolderCreator = () => {
+const FolderCreator = (folders: any, setFolders: any) => {
+  console.log(folders.length);
   const [folderName, setFolderName] = useState("");
+  const baseUrl = "https://bwidgets-server-6u3u-dev.fl0.io/api";
   const handleFolderCreation = async (e: any) => {
     const input = e.target.querySelector("#folder-name");
     e.preventDefault();
     try {
-      await fetch("http://localhost:3000/api/folder", {
+      await fetch(`${baseUrl}/folder`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

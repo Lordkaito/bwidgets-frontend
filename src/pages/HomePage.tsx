@@ -3,16 +3,26 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import Cookies from "js-cookie";
-import FolderCreator from "@components/FolderCreator";
 import FolderComponent from "@/components/Folder";
+import { useNavigate } from "react-router-dom";
 import "@styles/HomePage.css";
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [folders, setFolders] = useState([]);
+  const [folderName, setFolderName] = useState("");
   const [images, setImages] = useState([]);
   const { state } = useLocation();
+  const navigate = useNavigate();
+  const baseUrl = "https://bwidgets-server-6u3u-dev.fl0.io/api";
+  const baseImagesUrl = "https://bwidgets-server-6u3u-dev.fl0.io";
   useEffect(() => {
-    if(folders.length > 0) return;
+    console.log(baseUrl);
+    if (folders.length > 0) return;
+
+    if (state === null && Cookies.get("token") === undefined) {
+      navigate("/login");
+      return;
+    }
 
     if (state?.isLoggedIn) {
       fetchData();
@@ -27,15 +37,14 @@ const HomePage = () => {
 
   const fetchData = async () => {
     try {
-      fetch("http://localhost:3000/api/folders", {
+      fetch(`${baseUrl}/folders`, {
         method: "GET",
       }).then((res) =>
         res.json().then((data) => {
           if (data.length > 0) {
-            console.log(data);
             setFolders(data);
           } else {
-            fetch("http://localhost:3000/api/images").then((res) =>
+            fetch(`${baseUrl}/images`).then((res) =>
               res.json().then((data) => {
                 setImages(data);
               })
@@ -48,23 +57,63 @@ const HomePage = () => {
       console.log(err);
     }
   };
+
+  const handleFolderCreation = async (e: any) => {
+    const input = e.target.querySelector("#folder-name");
+    e.preventDefault();
+    try {
+      await fetch(`${baseUrl}/folder`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: folderName }),
+      }).then((res) => {
+        res.json().then((data) => {
+          console.log(data.message);
+        });
+      });
+      setFolderName("");
+      input.value = "";
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setFolderName("");
+    }
+  };
   return (
     <>
       <Navbar logged={state?.isLoggedIn} />
-      <FolderCreator />
+      <div className="folder-creator">
+        <h2>Create a folder</h2>
+        <form onSubmit={handleFolderCreation}>
+          <label htmlFor="folder-name">Name</label>
+          <input
+            type="text"
+            id="folder-name"
+            required
+            onChange={(e) => setFolderName(e.target.value)}
+          />
+          <button type="submit">Create</button>
+        </form>
+      </div>
       <h1>HomePage</h1>
       {isLoading && <h1>Loading...</h1>}
       {folders.length > 0 ? (
         <div className="folders-container">
-          {folders.map((folder: {id: number, name: string}) => (
-            <FolderComponent key={folder.id} name={folder.name} id={folder.id}/>
+          {folders.map((folder: { id: number; name: string }) => (
+            <FolderComponent
+              key={folder.id}
+              name={folder.name}
+              id={folder.id}
+            />
           ))}
         </div>
       ) : (
         <div className="images-container">
           {images.map((image: any) => (
             <div className="image" key={image.id}>
-              <img src={"http://localhost:3000" + image.url} alt={image.name} />
+              <img src={`${baseImagesUrl}` + image.url} alt={image.name} />
             </div>
           ))}
         </div>

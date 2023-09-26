@@ -13,7 +13,6 @@ interface ImageData {
 type ImagesState = ImageData[];
 const FoldersPage = () => {
   const [images, setImages] = useState<ImagesState>([]);
-  const [folderName, setFolderName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const baseUrl = "https://bwidgets-server-6u3u-dev.fl0.io/api"
@@ -74,7 +73,6 @@ const FoldersPage = () => {
     <>
       <Navbar />
       {isLoading && <h1>Loading...</h1>}
-      <p>{folderName}</p>
       <form onSubmit={(e) => handleImageUpload(e)}>
         <label htmlFor="uploadImages">
           <input type="file" name="file" multiple />

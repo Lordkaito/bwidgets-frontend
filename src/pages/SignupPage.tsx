@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const SignUpPage = () => {
   const [username, setUsername] = useState("");
@@ -16,13 +17,16 @@ const SignUpPage = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ username, password, email }),
-    }).then((res) => {
-      if (res.status === 201) {
-        navigate("/", { state: { isLoggedIn: true } });
-      } else {
-        alert("SignUp failed");
-      }
-    });
+    }).then((res) =>
+      res.json().then((data) => {
+        if (res.status === 201) {
+          Cookies.set("token", data.token, { expires: 2 });
+          navigate("/", { state: { isLoggedIn: true } });
+        } else {
+          alert("Signup failed");
+        }
+      })
+    );
   };
   return (
     <>

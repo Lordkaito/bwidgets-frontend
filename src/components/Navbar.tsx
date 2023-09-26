@@ -1,7 +1,15 @@
 import "@styles/Navbar.css";
 import { Link } from "react-router-dom";
-
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 const Navbar = (state: any) => {
+  const token = Cookies.get("token");
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    Cookies.remove("token");
+    navigate("/login", { state: { isLoggedIn: true } });
+    window.location.reload();
+  };
   return (
     <>
       <nav className="menu-container">
@@ -21,10 +29,10 @@ const Navbar = (state: any) => {
               <Link to="/">Home</Link>
             </li>
           </ul>
-          {state?.isLoggedIn ? (
+          {state?.isLoggedIn || token !== undefined ? (
             <ul>
               <li>
-                <Link to="/logout">Logout</Link>
+                <a href="/" onClick={handleLogout}>Logout</a>
               </li>
             </ul>
           ) : (
